@@ -1,0 +1,22 @@
+---
+import Header from "./Header.astro";
+
+interface Props {
+  back?: { href: string; label: string };
+  step?: 1 | 2 | 3 | 4;
+  table?: number;
+  width?: "wide" | "narrow";
+}
+
+const { back, step, table, width = "wide" } = Astro.props;
+---
+
+<Header back={back} step={step} table={table} />
+<main
+  class:list={[
+    "mx-auto w-full px-4 sm:px-6 pb-16",
+    width === "wide" ? "max-w-[1400px]" : "max-w-[900px]",
+  ]}
+>
+  <slot />
+</main>

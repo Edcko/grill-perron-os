@@ -1,0 +1,20 @@
+---
+import AppLayout from "../../../layouts/AppLayout.astro";
+import PageShell from "../../../components/astro/PageShell.astro";
+import TableBand from "../../../components/astro/TableBand.astro";
+import OrderClosing from "../../../components/islands/OrderClosing.tsx";
+import { tablePaths } from "../../../lib/paths";
+
+export const getStaticPaths = tablePaths;
+const table = Number(Astro.params.table);
+const label = `Mesa ${String(table).padStart(2, "0")}`;
+---
+
+<AppLayout title={`${label} · Cierre`} role="waiter">
+  <PageShell back={{ href: "/mesero", label: "Mesas" }} step={4} table={table}>
+    <TableBand table={table} eyebrow="Cierre de mesa" />
+    <OrderClosing client:only="react" table={table}>
+      <div slot="fallback" class="skeleton h-[28rem]" aria-hidden="true"></div>
+    </OrderClosing>
+  </PageShell>
+</AppLayout>

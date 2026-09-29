@@ -1,0 +1,242 @@
+---
+import { ArrowRight, ChefHat, Radio, TabletSmartphone, Workflow } from "lucide-react";
+import AppLayout from "../layouts/AppLayout.astro";
+import Logo from "../components/astro/Logo.astro";
+import DeviceFrame from "../components/astro/DeviceFrame.astro";
+import { createInitialState } from "../data/demo";
+
+// The mock screens reuse the real demo seed, so the teaser matches the product.
+const seed = createInitialState(0);
+const tables = Object.values(seed.tables);
+const chip: Record<string, { label: string; cls: string }> = {
+  free: { label: "Libre", cls: "text-muted ring-1 ring-ink/15" },
+  preparing: { label: "En preparación", cls: "bg-warn-soft text-warn" },
+  ready: { label: "Listo", cls: "bg-ready text-white" },
+  check: { label: "Cuenta", cls: "bg-white text-brand" },
+  ordering: { label: "Tomando pedido", cls: "bg-ink text-white" },
+};
+const mockTables = tables.map((t) => (t.id === 8 ? { ...t, status: "ordering" as const, guests: 2 } : t));
+interface MockTicket {
+  n: string;
+  s: string;
+  time: string;
+  fresh?: boolean;
+  late?: boolean;
+  ok?: boolean;
+}
+const kitchenLanes: { t: string; items: MockTicket[] }[] = [
+  { t: "Pendientes (3)", items: [{ n: "Mesa 08", s: "3 Quesabirrias", time: "00:04", fresh: true }, { n: "Andrea", s: "2 Quesabirrias", time: "00:46" }] },
+  { t: "En preparación (2)", items: [{ n: "Mesa 03", s: "2 Birria de Res", time: "04:12" }, { n: "Laura", s: "6 Tacos", time: "11:24", late: true }] },
+  { t: "Listos (1)", items: [{ n: "Mesa 05", s: "3 Quesabirrias", time: "01:20", ok: true }] },
+];
+const indicators = [
+  { icon: Radio, label: "Tiempo real" },
+  { icon: TabletSmartphone, label: "Diseñado para tablet" },
+  { icon: Workflow, label: "Integración con operación" },
+];
+---
+
+<AppLayout title="Grill Perrón OS · La comanda comienza aquí" theme="dark">
+  <div class="hero min-h-dvh flex flex-col overflow-hidden">
+    <header class="px-5 sm:px-10 pt-6 flex items-center justify-between">
+      <Logo size="md" tone="white" />
+      <span class="eyebrow text-white/45 hidden sm:inline">Demo interactiva · Sistema de comandas</span>
+    </header>
+
+    <main class="flex-1 grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] items-center gap-10 lg:gap-6 px-5 sm:px-10 pb-10 pt-8 lg:pt-0 max-w-[1600px] w-full mx-auto">
+      <section class="relative z-10">
+        <p class="eyebrow text-brand reveal" style="--d: 0ms">Grill Perrón</p>
+        <h1 class="display text-[4.2rem] sm:text-[6.2rem] xl:text-[7.6rem] mt-3 leading-[0.9]">
+          <span class="block reveal" style="--d: 80ms">La comanda</span>
+          <span class="block reveal" style="--d: 160ms">comienza <span class="text-brand">aquí.</span></span>
+        </h1>
+        <p class="mt-6 text-[1.2rem] sm:text-[1.35rem] text-white/75 font-medium max-w-[30ch] reveal" style="--d: 260ms">
+          Pedidos más rápidos. Cocina coordinada. Servicio en tiempo real.
+        </p>
+
+        <div class="mt-9 flex flex-col sm:flex-row gap-3 reveal" style="--d: 360ms">
+          <a
+            href="/inicio"
+            class="press group inline-flex items-center justify-center gap-3 min-h-[4.25rem] px-7 rounded-2xl bg-brand hover:bg-brand-deep text-white display text-[1.7rem] tracking-[0.03em]"
+          >
+            Iniciar demostración
+            <ArrowRight size={26} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+          </a>
+          <a
+            href="/cocina"
+            class="press inline-flex items-center justify-center gap-2.5 min-h-[4.25rem] px-6 rounded-2xl ring-2 ring-inset ring-white/25 hover:ring-white/60 font-bold uppercase tracking-[0.08em] text-[0.95rem]"
+          >
+            <ChefHat size={20} aria-hidden="true" /> Ver cocina
+          </a>
+        </div>
+
+        <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3 reveal" style="--d: 460ms">
+          {
+            indicators.map(({ icon: Icon, label }) => (
+              <li class="inline-flex items-center gap-2 text-[0.9rem] font-semibold text-white/70">
+                <Icon size={17} aria-hidden="true" className="text-white" /> {label}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Visual: waiter tablet sending a ticket to the kitchen display -->
+      <section class="stage relative w-full" aria-label="Tablet del mesero y pantalla de cocina">
+        <div class="monitor">
+        <DeviceFrame kind="monitor" label="Pantalla de cocina" surface="dark" class="h-full">
+          <div class="h-full p-[1.1em] flex flex-col gap-[0.9em] text-white">
+            <div class="flex items-center justify-between">
+              <span class="display text-[1.5em]">Cocina</span>
+              <span class="font-mono text-[0.95em] font-bold">21:48</span>
+            </div>
+            <div class="grid grid-cols-3 gap-[0.8em] flex-1 min-h-0">
+              {
+                kitchenLanes.map((lane) => (
+                  <div class="rounded-[0.7em] bg-ink-2 p-[0.6em] flex flex-col gap-[0.6em]">
+                    <span class="text-[0.62em] font-bold uppercase tracking-[0.12em] text-white/70">{lane.t}</span>
+                    {lane.items.map((it) => (
+                      <div class:list={["mini-ticket ticket text-ink px-[0.6em] pt-[0.55em]", it.fresh && "mini-fresh"]}>
+                        <div class="flex items-start justify-between gap-1">
+                          <span class="display text-[1.05em] leading-none">{it.n}</span>
+                          <span class:list={["font-mono text-[0.58em] font-bold rounded-[0.3em] px-[0.35em] py-[0.1em]", it.late ? "bg-brand text-white" : "bg-ink/8"]}>{it.time}</span>
+                        </div>
+                        <p class="text-[0.62em] font-semibold mt-[0.3em]">{it.s}</p>
+                        <div class:list={["mt-[0.5em] rounded-[0.3em] h-[1.5em]", it.ok ? "bg-ready-soft" : it.n === "Mesa 08" ? "bg-ink" : "bg-ready"]} />
+                      </div>
+                    ))}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </DeviceFrame>
+        </div>
+
+        <div class="tablet">
+        <DeviceFrame kind="tablet" label="Tablet del mesero" class="h-full">
+          <div class="h-full p-[1em] flex flex-col gap-[0.8em] text-ink">
+            <div class="flex items-center justify-between">
+              <span class="display text-[0.95em] leading-none"><span class="bg-brand text-white px-[0.2em] rounded-[0.1em]">Grill</span> Perrón</span>
+              <span class="inline-flex items-center gap-[0.3em] text-[0.55em] font-bold"><span class="size-[0.6em] rounded-full bg-ink"></span>Misael</span>
+            </div>
+            <span class="display text-[2.2em] leading-none">Mesas</span>
+            <div class="grid grid-cols-3 gap-[0.55em] flex-1 content-start">
+              {
+                mockTables.map((t) => (
+                  <div
+                    class:list={[
+                      "rounded-[0.6em] p-[0.55em] flex flex-col gap-[0.4em] min-h-[4.6em]",
+                      t.status === "free" ? "border border-dashed border-ink/15" : t.status === "check" ? "bg-brand text-white" : "bg-white shadow-[0_0.3em_0.8em_-0.4em_rgb(0_0_0/0.25)]",
+                      t.status === "ready" && "ring-2 ring-ready",
+                      t.id === 8 && "mini-table8",
+                    ]}
+                  >
+                    <span class="display text-[1.35em] leading-none">{String(t.id).padStart(2, "0")}</span>
+                    <span class:list={["mt-auto self-start rounded-full px-[0.5em] py-[0.15em] text-[0.42em] font-bold uppercase tracking-[0.06em]", chip[t.status]?.cls]}>
+                      {chip[t.status]?.label}
+                    </span>
+                  </div>
+                ))
+              }
+            </div>
+            <div class="rounded-[0.6em] bg-brand text-white h-[2.4em] flex items-center justify-center display text-[0.8em] tracking-[0.05em]">Enviar comanda</div>
+          </div>
+        </DeviceFrame>
+        </div>
+
+        <!-- The comanda travels from the tablet to the kitchen, once. -->
+        <div class="flying ticket text-ink px-[0.7em] pt-[0.6em]" aria-hidden="true">
+          <span class="display text-[1.1em] leading-none block">Mesa 08</span>
+          <span class="text-[0.6em] font-semibold">3 Quesabirrias · 2 Tacos</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</AppLayout>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(60rem 40rem at 85% 60%, rgb(215 25 32 / 0.13), transparent 70%),
+      var(--color-ink);
+  }
+  .reveal {
+    animation: rise 700ms var(--ease-snappy) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .stage {
+    /* Everything inside is sized in em: the whole scene scales as one piece. */
+    font-size: min(14px, calc((100vw - 2.5rem) / 52));
+    width: 52em;
+    height: 44em;
+    margin-inline: auto;
+  }
+  .monitor {
+    position: absolute;
+    left: 8em;
+    top: 0;
+    width: 44em;
+    height: 28em;
+    animation: slide-in 900ms 200ms var(--ease-snappy) both;
+  }
+  .tablet {
+    position: absolute;
+    left: 0;
+    top: 13em;
+    width: 23em;
+    height: 31em;
+    animation: slide-in 900ms 350ms var(--ease-snappy) both;
+    z-index: 2;
+  }
+  .mini-ticket {
+    --tooth: 0.3em;
+    border-radius: 0.4em 0.4em 0 0;
+  }
+  .mini-fresh {
+    animation: land 500ms 2300ms var(--ease-snappy) both;
+  }
+  .mini-table8 {
+    animation: tap 600ms 1300ms ease-out both;
+  }
+  .flying {
+    --tooth: 0.35em;
+    position: absolute;
+    z-index: 3;
+    left: 6em;
+    top: 38em;
+    width: 11em;
+    border-radius: 0.5em 0.5em 0 0;
+    box-shadow: 0 1em 2em -1em rgb(0 0 0 / 0.7);
+    animation: fly-ticket 1100ms 1500ms cubic-bezier(0.55, 0, 0.2, 1) both;
+    pointer-events: none;
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(2.5em); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes land {
+    from { opacity: 0; transform: translateY(-1em) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes tap {
+    0% { box-shadow: 0 0 0 0 rgb(215 25 32 / 0.7); }
+    100% { box-shadow: 0 0 0 1em rgb(215 25 32 / 0); }
+  }
+  @keyframes fly-ticket {
+    0% { opacity: 0; transform: translate(0, 0) rotate(-4deg) scale(0.9); }
+    15% { opacity: 1; }
+    70% { opacity: 1; transform: translate(4.5em, -32em) rotate(3deg) scale(0.95); }
+    100% { opacity: 0; transform: translate(4.5em, -33.5em) rotate(0) scale(0.85); }
+  }
+  @media (min-width: 1024px) {
+    .stage {
+      font-size: min(14px, calc((100vw - 5rem) * 0.52 / 52));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flying {
+      display: none;
+    }
+  }
+</style>

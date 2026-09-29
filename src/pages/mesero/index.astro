@@ -1,0 +1,22 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import PageShell from "../../components/astro/PageShell.astro";
+import TableMap from "../../components/islands/TableMap.tsx";
+---
+
+<AppLayout title="Mesas · Grill Perrón" role="waiter">
+  <PageShell>
+    <div class="pt-7 pb-5 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow text-brand">Servicio en curso</p>
+        <h1 class="display text-[3.6rem] sm:text-[4.4rem] mt-1">Mesas</h1>
+        <p class="text-muted font-medium text-[1.05rem] mt-1">Vista general del restaurante</p>
+      </div>
+    </div>
+    <TableMap client:only="react">
+      <div slot="fallback" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-16" aria-hidden="true">
+        {Array.from({ length: 8 }).map(() => <div class="skeleton h-[10.5rem]" />)}
+      </div>
+    </TableMap>
+  </PageShell>
+</AppLayout>

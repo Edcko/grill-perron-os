@@ -1,0 +1,23 @@
+---
+interface Props {
+  size?: "sm" | "md" | "lg";
+  tone?: "ink" | "white";
+  class?: string;
+}
+const { size = "md", tone = "ink", class: className } = Astro.props;
+const scale = { sm: "text-[1.35rem]", md: "text-[1.9rem]", lg: "text-[3.4rem]" }[size];
+---
+
+<span class:list={["inline-flex items-center gap-2 select-none", className]} aria-label="Grill Perrón">
+  <span
+    aria-hidden="true"
+    class:list={[
+      "display leading-none flex items-baseline gap-[0.18em]",
+      scale,
+      tone === "white" ? "text-white" : "text-ink",
+    ]}
+  >
+    <span class="bg-brand text-white px-[0.18em] pt-[0.1em] pb-[0.02em] rounded-[0.12em] -rotate-2 inline-block">Grill</span>
+    <span>Perrón</span>
+  </span>
+</span>

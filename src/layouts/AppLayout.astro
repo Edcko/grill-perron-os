@@ -1,0 +1,41 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Toaster from "../components/islands/Toaster.tsx";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Which toasts this screen should show. */
+  role?: "waiter" | "kitchen" | "none";
+  theme?: "light" | "dark";
+}
+
+const {
+  title,
+  description = "Grill Perrón OS — comandas digitales y cocina en tiempo real.",
+  role = "none",
+  theme = "light",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-MX" data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={theme === "dark" ? "#111111" : "#f7f7f5"} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <Font cssVariable="--font-anton" preload />
+    <Font cssVariable="--font-geist" preload={[{ weight: "400" }, { weight: "700" }]} />
+    <Font cssVariable="--font-geist-mono" />
+    <ClientRouter fallback="swap" />
+  </head>
+  <body class:list={["min-h-dvh", theme === "dark" ? "on-dark bg-ink text-white" : "bg-surface text-ink"]}>
+    <slot />
+    {role !== "none" && <Toaster client:only="react" scope={role} />}
+  </body>
+</html>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  table: number;
+  eyebrow: string;
+  title?: string;
+}
+const { table, eyebrow, title } = Astro.props;
+const label = String(table).padStart(2, "0");
+---
+
+<div class="pt-6 pb-5 flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <p class="eyebrow text-brand">{eyebrow}</p>
+    <h1 class="display text-[3.6rem] sm:text-[4.4rem] mt-1 inline-block" transition:name={`table-${table}`}>
+      {title ?? `Mesa ${label}`}
+    </h1>
+  </div>
+  <slot />
+</div>

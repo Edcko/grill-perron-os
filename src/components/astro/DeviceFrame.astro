@@ -1,0 +1,62 @@
+---
+interface Props {
+  kind: "tablet" | "monitor";
+  label: string;
+  /** Background of the display area. */
+  surface?: "light" | "dark";
+  class?: string;
+}
+const { kind, label, surface = "light", class: className } = Astro.props;
+---
+
+<figure class:list={["device", `device--${kind}`, className]} aria-label={label} role="img">
+  <div class="device__bezel">
+    <div class:list={["device__display", surface === "dark" ? "bg-ink" : "bg-surface"]}>
+      <slot />
+    </div>
+  </div>
+  {kind === "monitor" && <div class="device__stand" aria-hidden="true" />}
+</figure>
+
+<style>
+  .device {
+    margin: 0;
+    position: relative;
+  }
+  .device__bezel {
+    height: 100%;
+    background: #0b0b0b;
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.09),
+      0 50px 90px -35px rgb(0 0 0 / 0.95);
+  }
+  .device__display {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+  .device--tablet .device__bezel {
+    border-radius: 2.2em;
+    padding: 1em;
+  }
+  .device--tablet .device__display {
+    border-radius: 1.25em;
+  }
+  .device--monitor .device__bezel {
+    border-radius: 0.9em;
+    padding: 0.55em;
+  }
+  .device--monitor .device__display {
+    border-radius: 0.35em;
+  }
+  .device--monitor .device__bezel {
+    height: calc(100% - 2.2em);
+  }
+  .device__stand {
+    width: 20%;
+    height: 2.2em;
+    margin: 0 auto;
+    background: linear-gradient(#1c1c1c, #0c0c0c);
+    clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+  }
+</style>

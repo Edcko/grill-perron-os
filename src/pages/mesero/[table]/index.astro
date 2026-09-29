@@ -1,0 +1,27 @@
+---
+import AppLayout from "../../../layouts/AppLayout.astro";
+import PageShell from "../../../components/astro/PageShell.astro";
+import TableBand from "../../../components/astro/TableBand.astro";
+import MenuCatalog from "../../../components/islands/MenuCatalog.tsx";
+import { getFoodImages } from "../../../lib/images";
+import { tablePaths } from "../../../lib/paths";
+
+export const getStaticPaths = tablePaths;
+
+const table = Number(Astro.params.table);
+const images = await getFoodImages();
+---
+
+<AppLayout title={`Mesa ${String(table).padStart(2, "0")} · Menú`} role="waiter">
+  <PageShell back={{ href: "/mesero", label: "Mesas" }} step={2} table={table}>
+    <TableBand table={table} eyebrow="Nueva comanda" />
+    <div class="pb-24">
+      <MenuCatalog client:only="react" table={table} images={images}>
+        <div slot="fallback" class="grid grid-cols-[8.5rem_1fr] lg:grid-cols-[12rem_1fr] gap-4 mt-14" aria-hidden="true">
+          <div class="flex flex-col gap-2">{Array.from({ length: 6 }).map(() => <div class="skeleton h-[4.5rem]" />)}</div>
+          <div class="grid sm:grid-cols-2 gap-4">{Array.from({ length: 4 }).map(() => <div class="skeleton h-80" />)}</div>
+        </div>
+      </MenuCatalog>
+    </div>
+  </PageShell>
+</AppLayout>

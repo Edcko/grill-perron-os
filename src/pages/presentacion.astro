@@ -1,0 +1,13 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import PresentationStage from "../components/islands/PresentationStage.tsx";
+import { getFoodImages } from "../lib/images";
+
+const images = await getFoodImages();
+---
+
+<AppLayout title="Presentación · Grill Perrón OS" theme="dark">
+  <PresentationStage client:only="react" images={images}>
+    <div slot="fallback" class="h-dvh grid place-items-center bg-ink text-white/50 font-semibold">Preparando la demostración…</div>
+  </PresentationStage>
+</AppLayout>

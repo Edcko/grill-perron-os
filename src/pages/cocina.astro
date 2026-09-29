@@ -1,0 +1,37 @@
+---
+import { Wifi } from "lucide-react";
+import AppLayout from "../layouts/AppLayout.astro";
+import Logo from "../components/astro/Logo.astro";
+import KitchenBoard from "../components/islands/KitchenBoard.tsx";
+---
+
+<AppLayout title="Cocina · Grill Perrón" role="kitchen" theme="dark">
+  <div class="h-dvh flex flex-col px-4 sm:px-6 pb-5">
+    <header class="h-[4.75rem] shrink-0 flex items-center gap-4">
+      <a href="/" class="press rounded-lg" aria-label="Grill Perrón, inicio"><Logo size="sm" tone="white" /></a>
+      <span class="h-8 w-px bg-white/15" aria-hidden="true"></span>
+      <h1 class="display text-[1.9rem] tracking-[0.04em]">Cocina</h1>
+      <span class="hidden md:inline text-white/50 font-semibold text-[0.9rem]">Parrilla · Cocina · Barra</span>
+      <div class="ml-auto flex items-center gap-3">
+        <span class="hidden sm:inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-white/8 text-[0.82rem] font-semibold">
+          <span data-connection-dot class="size-2 rounded-full bg-ready-bright"></span>
+          <Wifi size={15} aria-hidden="true" />
+          <span data-connection-label>En vivo</span>
+        </span>
+        <time data-clock class="font-mono text-[1.6rem] font-bold tabular-nums">--:--</time>
+      </div>
+    </header>
+    <main class="flex-1 min-h-0">
+      <KitchenBoard client:only="react">
+        <div slot="fallback" class="on-dark grid lg:grid-cols-3 gap-5 h-full" aria-hidden="true">
+          <div class="skeleton h-full"></div><div class="skeleton h-full hidden lg:block"></div><div class="skeleton h-full hidden lg:block"></div>
+        </div>
+      </KitchenBoard>
+    </main>
+  </div>
+</AppLayout>
+
+<script>
+  import { bindChrome } from "../lib/chrome";
+  document.addEventListener("astro:page-load", bindChrome);
+</script>
